@@ -1,54 +1,36 @@
+// const express = require('express');
+
+// function counter(a,b){
+//     return a+b
+// }
+// let app=express();
+// app.get ("/",(req,res)=>{
+//     const a=req.query.a;
+//     const b=req.query.b;
+//     const sum=counter(a,b);
+//     res.send(sum)
+
+// })
+// app.listen(3000,()=>{
+//     console.log("server started")
+// })
+
 const express = require('express');
-const cors = require('cors');
-const app = express();
+const fs = require("fs");
+const server = express();
 
-const todolist = [
-    {
-        "title": "Gym",
-        "description": "Go to gym from 5-7 PM",
-        "id": 1
-    },
-    {
-        "title": "Study",
-        "description": "Complete JavaScript tutorial",
-        "id": 2
-    },
-    {
-        "title": "Grocery Shopping",
-        "description": "Buy fruits and vegetables",
-        "id": 3
-    },
-    {
-        "title": "Workout",
-        "description": "30 minutes cardio",
-        "id": 4
-    }
-];
+server.get("/getdata/:filename", (req, res) => {
+    const readfile = req.params.filename;  // Corrected parameter name to 'filename'
 
-
-// Enable CORS
-app.use(cors());
-
-// Endpoint to calculate simple interest
-app.get("/search", (req, res) => {
-    const principal = parseFloat(req.query.principal);
-    const rate = parseFloat(req.query.rate);
-    const time = parseFloat(req.query.time);
-
-    if (!isNaN(principal) && !isNaN(rate) && !isNaN(time)) {
-        const simpleInterest = (principal * rate * time) / 100;
-        res.status(200).send({ msg: simpleInterest });
-    } else {
-        res.status(400).send({ error: "Invalid query parameters" });
-    }
+    fs.readFile(readfile, "utf-8", (err, data) => {
+        if (err) {
+            // Send an error response if there's an issue reading the file
+            return res.status(500).json({ error: "File not found or unable to read file" });
+        }
+        res.json({ data: data });
+    });
 });
 
-// Endpoint to get todo list
-app.get('/search-todo', (req, res) => {
-    res.json(todolist);
-});
-
-// Start the server
-app.listen(3000, () => {
-    console.log('Server started on http://localhost:3000');
-});
+server.listen(4000, ()=>{
+console.log("server started")
+})
