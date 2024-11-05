@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Todo List</title>
+  <style>
+    li { margin-bottom: 10px; }
+    button { margin-left: 5px; }
+  </style>
+</head>
+<body>
+
+  <input type="text" placeholder="Enter a title" id="title">
+  <br><br>
+  <input type="text" placeholder="Enter a description" id="description">
+  <br><br>
+  <button onclick="todoupdate()" id="submitData">Submit</button>
+  <br><br>
+
+  <ul id="todoList"></ul>
+
+  <script>
+      let dummyId = 1;
+      let editId = null;  // Track if we are editing an item
+
+      // Edit a todo item
+      function editdata(id) {
+          const todoItem = document.getElementById(id);
+          const titleText = todoItem.querySelector("strong").innerText;
+          const descriptionText = todoItem.querySelector("p").innerText;
+          
+
+          // Populate the input fields with the current title and description
+          document.getElementById('title').value = titleText;
+          document.getElementById('description').value = descriptionText;
+
+          // Track the item being edited
+          editId = id;
+
+          // Change the button text to "Update"
+          document.getElementById('submitData').innerText = 'Update';
+      }      
+
+      // Delete a todo item
+      function deletedat(id) {
+          const todoItem = document.getElementById(id);
+          if (todoItem) {
+              todoItem.remove();
+          }
+      }      
+
+      // Render a single todo item with edit and delete buttons
+      function renderTodoItem(title, description, id) {
+          const todoItem = document.createElement("li");
+          todoItem.setAttribute("id", `todo-${id}`);
+
+          const titleText = document.createElement("strong");
+          titleText.innerText = title;
+
+          const descriptionText = document.createElement("p");
+          descriptionText.innerText = description;
+
+          // Edit button
+          const editButton = document.createElement('button');
+          editButton.innerText = 'Edit';
+          editButton.setAttribute('onclick', `editdata('todo-${id}')`);
+
+          // Delete button
+          const deleteButton = document.createElement('button');
+          deleteButton.innerText = 'Delete';
+          deleteButton.setAttribute('onclick', `deletedat('todo-${id}')`);
+
+          // Append elements
+          todoItem.appendChild(titleText);
+          todoItem.appendChild(document.createElement("br"));
+          todoItem.appendChild(descriptionText);
+          todoItem.appendChild(editButton);
+          todoItem.appendChild(deleteButton);
+
+          return todoItem;
+      }
+
+      // Function to handle adding/updating a todo item
+      function todoupdate() {
+          const title = document.getElementById('title').value;
+          const description = document.getElementById('description').value;
+          const todoContainer = document.getElementById('todoList');
+
+          // Clear input fields after submission
+          document.getElementById('title').value = '';
+          document.getElementById('description').value = '';
+
+          if (editId) {
+              // Update existing item if in edit mode
+              const todoItem = document.getElementById(editId);
+              todoItem.querySelector("strong").innerText = title;
+              todoItem.querySelector("p").innerText = description;
+
+              // Reset edit mode
+              editId = null;
+              document.getElementById('submitData').innerText = 'Submit';
+          } else {
+              // Create a new todo item if not in edit mode
+              const newTodoItem = renderTodoItem(title, description, dummyId++);
+              todoContainer.appendChild(newTodoItem);
+          }
+      }
+  </script>
+
+</body>
+</html>

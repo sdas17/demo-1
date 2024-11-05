@@ -1,0 +1,24 @@
+<html>
+    <script>
+        let sumTotal=0;
+        function debouncedata(){
+            clearInterval(sumTotal);
+            sumTotal=setInterval(() => {
+                sumoftownumber();
+            }, 1000);
+        }
+        function sumoftownumber(){
+            let a =document.getElementById('firstnumber').value;
+            let b=document.getElementById('secoundnumber').value;
+            const data =await ('https://sum-server.100xdevs.com/sum?a='+ a + '&b=' + b)
+            const sum = await .data.text();
+            document.getElementById('innerhtml').innerHTML=sum
+
+        }
+    </script>
+    <input type="text" placeholder="enter your first number" id="firstnumber" onchange="debouncedata()">
+    <br></br>
+    <input type="text" placeholder="enter your secound numbe" id="secoundnumber" onchange="debouncedata()">
+    <button onclick="sumoftownumber()">Sum of two numbwe</button>
+    <h2 id="innerhtml"></h2>
+</html>

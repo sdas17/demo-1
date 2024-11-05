@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+</head>
+<script>
+   async function submitinterest(){
+        const principal = document.getElementById('principal').value;
+ const rate = document.getElementById('rate').value;
+ const time = document.getElementById('time').value;
+ const response = await fetch(`http://localhost:3000/search/?principal=${principal}&rate=${rate}&time=${time}`)
+    const data = await response.json();
+document.getElementById("innte").innerHTML=data.msg
+    
+    }
+
+
+</script>
+<body>
+    <input type="text" placeholder="enter your principal" id="principal"/>
+    <br>
+    <input type="text" placeholder="enter your rate" id="rate"/>
+    <br>
+    <input type="text" placeholder="enter your time" id="time"/>
+    <br>
+    <button onclick="submitinterest()">enter your interest</button>
+   <div id="innte"></div>
+
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Todo App</title>
+</head>
+<body>
+    <input type="text" placeholder="Enter your work" id="title"/>
+    <input type="text" placeholder="Enter your description" id="description"/>
+    <button onclick="submittodo()" id="submitodo">Submit Todo</button>
+
+    <div id="todoContainer"></div> 
+
+    <script>
+        let counterid = 1;
+
+        function renderTodoItem(value, description, id) {
+            const child = document.createElement('div');
+            child.setAttribute("id", `todo-${id}`);
+
+            const titleDiv = document.createElement('div');
+            titleDiv.innerHTML = value;
+
+            const descriptionDiv = document.createElement('div');
+            descriptionDiv.innerHTML = description;
+
+            const doneButton = document.createElement('button');
+            doneButton.innerHTML = 'Mark as Done';
+            doneButton.setAttribute('onclick', `markAsDone('todo-${id}')`);
+
+            child.appendChild(titleDiv);
+            child.appendChild(descriptionDiv);
+            child.appendChild(doneButton);
+
+            return child;
+        }
+
+        function markAsDone(id) {
+            const todoItem = document.getElementById(id);
+            if (todoItem) {
+                todoItem.children[2].innerHTML = 'Done';
+                todoItem.style.textDecoration = "line-through";
+                todoItem.style.color = "grey";
+            }
+        }
+
+        function submittodo() {
+            const value = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const todoContainer = document.getElementById('todoContainer');
+            todoContainer.appendChild(renderTodoItem(value, description, counterid));
+            counterid += 1;
+
+            // Clear input fields after submission
+            document.getElementById('title').value = '';
+            document.getElementById('description').value = '';
+        }
+
+        function updateDOMWithTodos(todos) {
+            const parentElement = document.getElementById('todoContainer');
+            parentElement.innerHTML = ''; // Clear the container
+            counterid = 1; // Reset counter for consistent IDs
+
+            for (let todo of todos) {
+                const child = renderTodoItem(todo.title, todo.description, counterid++);
+                parentElement.appendChild(child);
+            }
+        }
+
+        // Fetch data every 5 seconds
+        setInterval(async () => {
+            try {
+                const response = await fetch("http://localhost:3000/search-todo");
+                const todos = await response.json();
+                updateDOMWithTodos(todos); 
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }, 5000); // 5000 ms = 5 seconds
+
+    </script>
+</body>
+</html>
